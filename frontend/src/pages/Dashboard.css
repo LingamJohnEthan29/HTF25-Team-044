@@ -1,0 +1,69 @@
+.dashboard-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #000; /* dark background */
+  overflow: hidden;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Dashboard content */
+.dashboard-content {
+  position: relative;
+  z-index: 10;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: #fff;
+}
+
+/* Title */
+.dashboard-title {
+  font-size: 3rem;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+}
+
+/* Wallet input */
+.wallet-input {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.wallet-field {
+  flex: 1;
+  max-width: 400px;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: none;
+  font-size: 1rem;
+}
+
+.wallet-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  border: none;
+  background-color: #3A29FF;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.wallet-btn:hover {
+  background-color: #2a1abf;
+}
+
+/* Raw NFT debug */
+.raw-nft-data {
+  margin-top: 2rem;
+  background-color: rgba(255,255,255,0.05);
+  padding: 1rem;
+  border-radius: 12px;
+  overflow-x: auto;
+  font-size: 0.9rem;
+}

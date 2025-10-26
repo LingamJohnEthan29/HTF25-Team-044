@@ -1,26 +1,39 @@
-// backend/controllers/userroutes.js
 import { Router } from 'express';
 import User from '../models/user.js';
 
 const router = Router();
 
-// Create a new user
-router.post('/', async (req, res) => {
+// Signup
+router.post('/signup', async (req, res) => {
   const { walletAddress, name } = req.body;
-
-  if (!walletAddress) return res.status(400).json({ error: "Wallet address is required" });
+  if (!walletAddress) return res.status(400).json({ success: false, message: "Wallet address required" });
 
   try {
     const existingUser = await User.findOne({ walletAddress });
-    if (existingUser) return res.status(400).json({ error: "User already exists" });
+    if (existingUser) return res.status(400).json({ success: false, message: "User already exists" });
 
     const newUser = new User({ walletAddress, name });
     await newUser.save();
-
-    res.status(201).json(newUser);
+    res.status(201).json({ success: true, user: newUser });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// Login
+router.post('/login', async (req, res) => {
+  const { walletAddress } = req.body;
+  if (!walletAddress) return res.status(400).json({ success: false, message: "Wallet address required" });
+
+  try {
+    const user = await User.findOne({ walletAddress });
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    res.json({ success: true, user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 

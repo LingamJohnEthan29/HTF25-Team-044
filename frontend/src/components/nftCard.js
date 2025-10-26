@@ -1,59 +1,50 @@
-import PixelTransition from './react-bits/PixelTransition.js';
+import { motion } from "framer-motion";
+import { useState } from "react";
 
 export default function NFTCard({ nft }) {
-  const imageUrl =
-    nft.image?.cachedUrl ||
-    nft.raw?.metadata?.image?.replace("ipfs://", "https://ipfs.io/ipfs/") ||
-    "/placeholder.png";
-
-  const title =
-    nft.name ||
-    nft.raw?.metadata?.name ||
-    `Token #${nft.tokenId}` ||
-    "Untitled NFT";
-
-  const creator =
-    nft.contract?.openSeaMetadata?.twitterUsername ||
-    nft.contract?.name ||
-    "Unknown Creator";
-
-  const collection =
-    nft.collection?.name ||
-    nft.contract?.openSeaMetadata?.collectionName ||
-    "Unnamed Collection";
-
-  const floorPrice = nft.contract?.openSeaMetadata?.floorPrice;
-
-  const defaultCard = (
-    <div className="hover:scale-[1.03] transition-transform duration-300">
-      <img
-        src={imageUrl}
-        alt={title}
-        className="rounded-lg w-full h-60 object-cover"
-      />
-      <div className="mt-3">
-        <h3 className="font-semibold text-lg truncate">{title}</h3>
-        <p className="text-sm text-gray-500">Creator: {creator}</p>
-        <p className="text-sm text-gray-600">Collection: {collection}</p>
-      </div>
-    </div>
-  );
-
-  const activeCard = (
-    <div className="p-3 text-sm text-gray-200 bg-gray-900 rounded-xl">
-      <p>Token ID: {nft.tokenId}</p>
-      {floorPrice && <p>Floor Price: {floorPrice} ETH</p>}
-      <p>Address: {nft.contract?.address}</p>
-    </div>
-  );
+  const [isFlipped, setIsFlipped] = useState(false);
 
   return (
-    <PixelTransition
-      firstContent={defaultCard}
-      secondContent={activeCard}
-      gridSize={8}
-      pixelColor="#9333ea"
-      className="rounded-2xl shadow p-3 bg-white dark:bg-gray-800 hover:shadow-lg cursor-pointer"
-    />
+    <motion.div
+      className="relative w-full h-80 cursor-pointer perspective"
+      onClick={() => setIsFlipped(!isFlipped)}
+    >
+      <motion.div
+        className="absolute inset-0 rounded-xl shadow-lg overflow-hidden"
+        initial={false}
+        animate={{ rotateY: isFlipped ? 180 : 0 }}
+        transition={{ duration: 0.7 }}
+        style={{ transformStyle: "preserve-3d" }}
+      >
+        {/* Front Side */}
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 text-white p-2"
+          style={{ backfaceVisibility: "hidden" }}
+        >
+          <img
+            src={nft.image} // already filtered to have images
+            alt={nft.title}
+            className="w-36 h-36 object-cover rounded-lg" // Kept the smaller size
+          />
+          <h3 className="mt-2 font-semibold text-white text-center text-sm">{nft.title}</h3>
+          <p className="text-xs text-gray-300 text-center mt-1">{nft.collection}</p>
+        </div>
+
+        {/* Back Side */}
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-start bg-gray-800 text-white p-4 overflow-y-auto" // <-- FIX APPLIED HERE
+          style={{
+            backfaceVisibility: "hidden",
+            transform: "rotateY(180deg)",
+          }}
+        >
+          <h3 className="font-semibold text-sm mb-2">{nft.title}</h3>
+          <p className="text-xs text-gray-200 text-center">
+            {nft.description || "No description available"}
+          </p>
+          <p className="text-xxs text-gray-400 mt-2">{nft.collection}</p>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
